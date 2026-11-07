@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+  <g transform="rotate(-45 16 16)">
+    <!-- Slotted Smash-Burger Blade (top points toward click hotspot) -->
+    <path d="M10.5 2.5C10.5 1.67 11.17 1 12 1H20C20.83 1 21.5 1.67 21.5 2.5L22.2 13.5C22.26 14.38 21.56 15.12 20.68 15.12H11.32C10.44 15.12 9.74 14.38 9.8 13.5L10.5 2.5Z" fill="#E5E7EB" stroke="#090A0F" stroke-width="1.6" stroke-linejoin="round"/>
+    <!-- Beveled Top Scraping Edge -->
+    <path d="M11.2 2.4H20.8" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round"/>
+    <!-- 3 Classic Spatula Slots -->
+    <rect x="12.2" y="4.5" width="1.5" height="7.5" rx="0.75" fill="#1F2937"/>
+    <rect x="15.25" y="4.5" width="1.5" height="7.5" rx="0.75" fill="#1F2937"/>
+    <rect x="18.3" y="4.5" width="1.5" height="7.5" rx="0.75" fill="#1F2937"/>
+    <!-- Bent Steel Neck -->
+    <path d="M14.5 15.1H17.5V19.5H14.5V15.1Z" fill="#9CA3AF" stroke="#090A0F" stroke-width="1.4"/>
+    <!-- Riveted Wooden / Amber Smash Handle -->
+    <rect x="13.3" y="19" width="5.4" height="11.5" rx="2.6" fill="#FF6B00" stroke="#090A0F" stroke-width="1.6"/>
+    <circle cx="16" cy="22.2" r="0.9" fill="#FFFBEB"/>
+    <circle cx="16" cy="26.5" r="0.9" fill="#FFFBEB"/>
+  </g>
+</svg>
+

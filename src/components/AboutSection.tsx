@@ -47,7 +47,7 @@ export default function AboutSection({ dict }: AboutSectionProps) {
         <div className="absolute inset-0 bg-gradient-to-b from-[#0A0B0E] via-transparent to-[#0A0B0E]" />
       </motion.div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 w-full max-w-[1860px] mx-auto px-4 sm:px-8 lg:px-12 2xl:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
           {/* Left Column: Clean Editorial Story + Social Follow CTA + Unboxed Stats */}
           <motion.div
@@ -123,26 +123,26 @@ export default function AboutSection({ dict }: AboutSectionProps) {
               />
             </motion.div>
 
-            {/* Sticker 2: Authentic Dupla Smash Burger with Thick Cream-White Vinyl Outline */}
+            {/* Sticker 2: Authentic Gouda Boss Burger with Thick Cream-White Vinyl Outline */}
             <motion.div
               style={{ y: stickerBurgerY }}
               initial={{ opacity: 0, scale: 0.88, rotate: 7 }}
-              whileInView={{ opacity: 1, scale: 1, rotate: 6 }}
-              whileHover={{ scale: 1.07, rotate: 2, zIndex: 30 }}
+              whileInView={{ opacity: 1, scale: 1, rotate: 5 }}
+              whileHover={{ scale: 1.07, rotate: 1.5, zIndex: 30 }}
               whileTap={{ scale: 0.97 }}
               drag
               dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
               dragElastic={0.18}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ type: 'spring', stiffness: 320, damping: 24, delay: 0.08 }}
-              className="relative z-25 w-[58%] sm:w-[54%] -ml-14 sm:-ml-18 mt-20 sm:mt-28 select-none cursor-grab active:cursor-grabbing"
+              className="relative z-25 w-[48%] sm:w-[44%] max-w-[275px] -ml-10 sm:-ml-14 mt-14 sm:mt-20 select-none cursor-grab active:cursor-grabbing"
             >
               <Image
-                src="/images/stickers/sticker-smash-burger.webp"
+                src="/images/stickers/sticker-gouda-boss.webp"
                 alt={dict.about.stickerCaptions.burger}
-                width={720}
-                height={491}
-                sizes="(max-width: 768px) 52vw, 310px"
+                width={501}
+                height={736}
+                sizes="(max-width: 768px) 46vw, 275px"
                 draggable={false}
                 className="w-full h-auto object-contain drop-shadow-[0_24px_45px_rgba(0,0,0,0.88)]"
               />

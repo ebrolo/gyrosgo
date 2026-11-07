@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+  <g transform="rotate(-45 16 16)">
+    <!-- Heated Golden Smash-Burger Blade (Interactive Hover State) -->
+    <path d="M10.2 2.5C10.2 1.67 10.87 1 11.7 1H20.3C21.13 1 21.8 1.67 21.8 2.5L22.5 13.5C22.56 14.38 21.86 15.12 20.98 15.12H11.02C10.14 15.12 9.44 14.38 9.5 13.5L10.2 2.5Z" fill="#FFB800" stroke="#090A0F" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M11 2.4H21" stroke="#FFFBEB" stroke-width="1.4" stroke-linecap="round"/>
+    <!-- 3 Classic Spatula Slots -->
+    <rect x="12.1" y="4.5" width="1.5" height="7.5" rx="0.75" fill="#090A0F"/>
+    <rect x="15.25" y="4.5" width="1.5" height="7.5" rx="0.75" fill="#090A0F"/>
+    <rect x="18.4" y="4.5" width="1.5" height="7.5" rx="0.75" fill="#090A0F"/>
+    <!-- Steel Neck -->
+    <path d="M14.5 15.1H17.5V19.5H14.5V15.1Z" fill="#D1D5DB" stroke="#090A0F" stroke-width="1.4"/>
+    <!-- Handle -->
+    <rect x="13.2" y="19" width="5.6" height="11.5" rx="2.7" fill="#FF6B00" stroke="#090A0F" stroke-width="1.6"/>
+    <circle cx="16" cy="22.2" r="0.95" fill="#FFFBEB"/>
+    <circle cx="16" cy="26.5" r="0.95" fill="#FFFBEB"/>
+  </g>
+</svg>
+

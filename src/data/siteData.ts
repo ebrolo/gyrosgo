@@ -10,6 +10,9 @@ export interface HeroSlide {
   priceValue: string;
   numericPrice: number;
   kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
   image: string;
   comboEligible?: boolean;
   layerLabels: string[];
@@ -34,12 +37,13 @@ export interface MenuItem {
   carbsG: number;
   fatG: number;
   image: string;
-  badge?: string;
   spicy?: boolean;
   cheeseLover?: boolean;
   smashBeef?: boolean;
   poultry?: boolean;
   vegetarian?: boolean;
+  secretRecipe?: boolean;
+  isCutoutDrink?: boolean;
   menuUpgradeable?: boolean;
   variants?: ItemVariant[];
 }
@@ -57,6 +61,9 @@ export interface ExtraAddon {
   price: number;
   priceDisplay: string;
   kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
   category: 'side' | 'sauce';
 }
 
@@ -69,13 +76,6 @@ export interface PromoCard {
   title: string;
   highlights: string[];
   footnote: string;
-}
-
-export interface GalleryItem {
-  id: string;
-  src: string;
-  title: string;
-  categoryLabel: string;
 }
 
 export interface ReviewExtra {
@@ -108,10 +108,10 @@ export interface SiteDictionary {
     menu: string;
     promos: string;
     about: string;
-    gallery: string;
     reviews: string;
     contact: string;
     cartLabel: string;
+    secretLinkLabel: string;
   };
   hero: {
     eyebrow: string;
@@ -123,6 +123,7 @@ export interface SiteDictionary {
     scrollHint: string;
     prevSlideAria: string;
     nextSlideAria: string;
+    secretTriggerAria: string;
     slides: HeroSlide[];
     marqueeItems: string[];
   };
@@ -138,6 +139,9 @@ export interface SiteDictionary {
     itemsCountLabel: string;
     addToCartLabel: string;
     menuUpgradeToggleLabel: string;
+    lightboxPrevAria: string;
+    lightboxNextAria: string;
+    lightboxCloseAria: string;
     sortLabels: {
       nameAsc: string;
       nameDesc: string;
@@ -152,6 +156,9 @@ export interface SiteDictionary {
       fat: string;
       comboBonusLabel: string;
       comboBonusKcal: number;
+      comboBonusProteinG: number;
+      comboBonusCarbsG: number;
+      comboBonusFatG: number;
       disclaimer: string;
     };
     filterLabels: {
@@ -159,6 +166,7 @@ export interface SiteDictionary {
       cheeseLover: string;
       spicy: string;
       poultry: string;
+      secretRecipe: string;
     };
     comboStrip: {
       title: string;
@@ -185,6 +193,13 @@ export interface SiteDictionary {
     kcalToggleLabel: string;
     kcalTotalLabel: string;
     kcalDisclaimer: string;
+    macroHeaders: {
+      item: string;
+      kcal: string;
+      protein: string;
+      carbs: string;
+      fat: string;
+    };
   };
   promos: {
     badge: string;
@@ -202,11 +217,6 @@ export interface SiteDictionary {
       burger: string;
     };
     stats: { value: string; label: string }[];
-  };
-  gallery: {
-    badge: string;
-    title: string;
-    items: GalleryItem[];
   };
   reviews: {
     badge: string;
@@ -310,10 +320,10 @@ export const siteData: Record<Language, SiteDictionary> = {
       menu: 'Étlap',
       promos: 'Kedvezmények',
       about: 'Étterem',
-      gallery: 'Galéria',
       reviews: 'Vélemények',
       contact: 'Kapcsolat',
       cartLabel: 'Kosár',
+      secretLinkLabel: 'Herkentyű titok',
     },
     hero: {
       eyebrow: 'NYÍRBÁTOR • SZENTVÉR ÚT 19.',
@@ -325,6 +335,7 @@ export const siteData: Record<Language, SiteDictionary> = {
       scrollHint: 'Görgess',
       prevSlideAria: 'Előző kiemelt étel',
       nextSlideAria: 'Következő kiemelt étel',
+      secretTriggerAria: 'Titkos Herkentyű Burger felfedése',
       slides: [
         {
           id: 'dupla-smash-burger',
@@ -337,14 +348,17 @@ export const siteData: Record<Language, SiteDictionary> = {
           priceValue: '2 700 Ft',
           numericPrice: 2700,
           kcal: 860,
+          proteinG: 48,
+          carbsG: 46,
+          fatG: 54,
           image: '/images/menu/dupla-smash-burger.jpg',
           comboEligible: true,
           layerLabels: [
-            'Pirított briós buci',
-            'Ropogós bacon & uborka',
-            'Smash marhahús & cheddar',
-            'Smash marhahús & házi szósz',
-            'Pirított buci alap',
+            '150 g smash marhahús',
+            'Pirított ropogós bacon',
+            'Folyékony cheddar szósz',
+            'Csemegeuborka',
+            'Házi burger szósz',
           ],
         },
         {
@@ -358,34 +372,41 @@ export const siteData: Record<Language, SiteDictionary> = {
           priceValue: '4 900 Ft',
           numericPrice: 4900,
           kcal: 2480,
+          proteinG: 118,
+          carbsG: 215,
+          fatG: 128,
           image: '/images/menu/smash-box-1.jpg',
           comboEligible: false,
           layerLabels: [
-            '3 db klasszikus mini Smash Burger',
-            '3 db baconos mini Smash Burger',
-            '2 adag sült krumpli & 2 mártogatós',
-            'Street-food box tálca',
+            '6 db mini Smash Burger',
+            '100% szaftos marhahús',
+            'Olvadó cheddar & bacon',
+            '2 adag ropogós sült krumpli',
+            '2 db választható mártogatós',
           ],
         },
         {
-          id: 'cheddar-sajtorulet',
+          id: 'cheddar-sajtos-burger',
           tag: 'FOLYÉKONY CHEDDAR ÁR',
           titleLine1: 'CHEDDAR',
           titleAccent: 'SAJTŐRÜLET',
           bgWord: 'CHEDDAR',
           ingredients:
-            'Forró folyékony cheddar sajtszósz • marhahús • lilahagyma lekvár • bacon • hagymakarika',
-          priceValue: '3 400 Ft',
-          numericPrice: 3400,
-          kcal: 980,
-          image: '/images/menu/cheddar-sajtorulet.jpg',
+            '85 g marhahús • buci tetejéről ömlő cheddar sajtszósz • ropogós bacon • lilahagyma lekvár • uborka',
+          priceValue: '3 700 Ft',
+          numericPrice: 3700,
+          kcal: 940,
+          proteinG: 42,
+          carbsG: 52,
+          fatG: 62,
+          image: '/images/menu/cheddar-sajtos-burger.jpg',
           comboEligible: true,
           layerLabels: [
-            'Ropogós hagymakarika & briós buci',
-            'Folyékony cheddar sajtszósz',
-            'Sült bacon & lilahagyma lekvár',
-            'Smash marhahús & cheddar',
-            'Pirított briós alap',
+            'Dupla ropogós hagymakarika',
+            'Buci tetejéről ömlő cheddar sajtszósz',
+            'Pirított bacon & lilahagyma lekvár',
+            '85 g szaftos smash marhahús & cheddar',
+            'Csemegeuborka & pirított buci',
           ],
         },
       ],
@@ -393,7 +414,7 @@ export const siteData: Record<Language, SiteDictionary> = {
         'GYORSAN. FINOMAT. NEKED!',
         '100% MARHA SMASH BURGER',
         '6 DB-OS SMASH BOX 4 900 FT',
-        'CHEDDAR SAJTŐRÜLET 3 400 FT',
+        'CHEDDAR SAJTOS BURGER 3 700 FT',
         'GYROS & KEBAB',
         'MENÜ UPGRADE +700 FT',
       ],
@@ -410,6 +431,9 @@ export const siteData: Record<Language, SiteDictionary> = {
       itemsCountLabel: 'tétel',
       addToCartLabel: '+ Kosárba',
       menuUpgradeToggleLabel: '+ Menü (+700 Ft)',
+      lightboxPrevAria: 'Előző ételfotó',
+      lightboxNextAria: 'Következő ételfotó',
+      lightboxCloseAria: 'Bezárás',
       sortLabels: {
         nameAsc: 'A–Z',
         nameDesc: 'Z–A',
@@ -424,6 +448,9 @@ export const siteData: Record<Language, SiteDictionary> = {
         fat: 'Zsír',
         comboBonusLabel: '+ Menü (+460 kcal)',
         comboBonusKcal: 460,
+        comboBonusProteinG: 5,
+        comboBonusCarbsG: 74,
+        comboBonusFatG: 16,
         disclaimer: 'Kalkulált becslés, ±15% eltérés lehetséges.',
       },
       filterLabels: {
@@ -431,6 +458,7 @@ export const siteData: Record<Language, SiteDictionary> = {
         cheeseLover: 'Sajtos',
         spicy: 'Csípős',
         poultry: 'Csirke',
+        secretRecipe: 'Herkentyű titok',
       },
       comboStrip: {
         title: 'MENÜ UPGRADE',
@@ -448,6 +476,9 @@ export const siteData: Record<Language, SiteDictionary> = {
           price: 500,
           priceDisplay: '+500 Ft',
           kcal: 80,
+          proteinG: 1,
+          carbsG: 16,
+          fatG: 2,
           category: 'side',
         },
         {
@@ -456,6 +487,9 @@ export const siteData: Record<Language, SiteDictionary> = {
           price: 600,
           priceDisplay: '600 Ft',
           kcal: 210,
+          proteinG: 6,
+          carbsG: 4,
+          fatG: 18,
           category: 'sauce',
         },
         {
@@ -464,6 +498,9 @@ export const siteData: Record<Language, SiteDictionary> = {
           price: 300,
           priceDisplay: '300 Ft',
           kcal: 190,
+          proteinG: 1,
+          carbsG: 4,
+          fatG: 19,
           category: 'sauce',
         },
         {
@@ -472,6 +509,9 @@ export const siteData: Record<Language, SiteDictionary> = {
           price: 300,
           priceDisplay: '300 Ft',
           kcal: 110,
+          proteinG: 3,
+          carbsG: 4,
+          fatG: 9,
           category: 'sauce',
         },
         {
@@ -480,6 +520,9 @@ export const siteData: Record<Language, SiteDictionary> = {
           price: 300,
           priceDisplay: '300 Ft',
           kcal: 95,
+          proteinG: 1,
+          carbsG: 6,
+          fatG: 7,
           category: 'sauce',
         },
         {
@@ -488,6 +531,9 @@ export const siteData: Record<Language, SiteDictionary> = {
           price: 300,
           priceDisplay: '300 Ft',
           kcal: 105,
+          proteinG: 3,
+          carbsG: 4,
+          fatG: 8,
           category: 'sauce',
         },
       ],
@@ -509,7 +555,6 @@ export const siteData: Record<Language, SiteDictionary> = {
               carbsG: 215,
               fatG: 128,
               image: '/images/menu/smash-box-1.jpg',
-              badge: 'Box',
               smashBeef: true,
               cheeseLover: true,
             },
@@ -528,53 +573,6 @@ export const siteData: Record<Language, SiteDictionary> = {
               smashBeef: true,
               cheeseLover: true,
               menuUpgradeable: true,
-            },
-            {
-              id: 'cheddar-sajtorulet',
-              name: 'Cheddar Sajtőrület',
-              description:
-                'Forró folyékony cheddar sajtszósz, marhahús, választható feltét: sonka / jalapeño / bacon / cheddar',
-              price: '3 400 Ft',
-              numericPrice: 3400,
-              kcal: 980,
-              proteinG: 46,
-              carbsG: 54,
-              fatG: 64,
-              image: '/images/menu/cheddar-sajtorulet.jpg',
-              badge: '4 féle',
-              smashBeef: true,
-              cheeseLover: true,
-              menuUpgradeable: true,
-              variants: [
-                {
-                  id: 'bacon',
-                  label: 'Bacon',
-                  price: 3400,
-                  priceDisplay: '3 400 Ft',
-                  kcal: 990,
-                },
-                {
-                  id: 'cheddar',
-                  label: 'Cheddar',
-                  price: 3400,
-                  priceDisplay: '3 400 Ft',
-                  kcal: 1020,
-                },
-                {
-                  id: 'jalapeno',
-                  label: 'Jalapeño',
-                  price: 3400,
-                  priceDisplay: '3 400 Ft',
-                  kcal: 920,
-                },
-                {
-                  id: 'sonka',
-                  label: 'Sonka',
-                  price: 3400,
-                  priceDisplay: '3 400 Ft',
-                  kcal: 940,
-                },
-              ],
             },
             {
               id: 'crispy-burger',
@@ -616,7 +614,6 @@ export const siteData: Record<Language, SiteDictionary> = {
               carbsG: 46,
               fatG: 54,
               image: '/images/menu/dupla-smash-burger.jpg',
-              badge: 'Top',
               smashBeef: true,
               cheeseLover: true,
               menuUpgradeable: true,
@@ -633,7 +630,6 @@ export const siteData: Record<Language, SiteDictionary> = {
               carbsG: 58,
               fatG: 72,
               image: '/images/menu/gouda-boss-burger.jpg',
-              badge: 'Boss',
               smashBeef: true,
               cheeseLover: true,
               menuUpgradeable: true,
@@ -666,6 +662,7 @@ export const siteData: Record<Language, SiteDictionary> = {
               image: '/images/menu/herkentyu-burger.jpg',
               smashBeef: true,
               cheeseLover: true,
+              secretRecipe: true,
               menuUpgradeable: true,
             },
             {
@@ -709,7 +706,6 @@ export const siteData: Record<Language, SiteDictionary> = {
               carbsG: 47,
               fatG: 58,
               image: '/images/menu/szarvasgombas-burger.jpg',
-              badge: '170g',
               smashBeef: true,
               cheeseLover: true,
               menuUpgradeable: true,
@@ -820,7 +816,6 @@ export const siteData: Record<Language, SiteDictionary> = {
               carbsG: 96,
               fatG: 61,
               image: '/images/menu/nagy-gyros-tal.jpg',
-              badge: 'Top',
               poultry: true,
             },
             {
@@ -942,7 +937,6 @@ export const siteData: Record<Language, SiteDictionary> = {
               carbsG: 86,
               fatG: 62,
               image: '/images/menu/cheddar-sonka-csirke.jpg',
-              badge: 'Pankó',
               poultry: true,
               cheeseLover: true,
             },
@@ -1118,7 +1112,8 @@ export const siteData: Record<Language, SiteDictionary> = {
               proteinG: 0,
               carbsG: 35,
               fatG: 0,
-              image: '/images/menu/coca-cola-033.jpg',
+              image: '/images/menu/coca-cola-033.webp',
+              isCutoutDrink: true,
             },
             {
               id: 'coca-cola-05',
@@ -1130,7 +1125,8 @@ export const siteData: Record<Language, SiteDictionary> = {
               proteinG: 0,
               carbsG: 53,
               fatG: 0,
-              image: '/images/menu/coca-cola-05.jpg',
+              image: '/images/menu/coca-cola-05.webp',
+              isCutoutDrink: true,
             },
             {
               id: 'fanta-033',
@@ -1142,7 +1138,8 @@ export const siteData: Record<Language, SiteDictionary> = {
               proteinG: 0,
               carbsG: 35,
               fatG: 0,
-              image: '/images/menu/fanta-033.jpg',
+              image: '/images/menu/fanta-033.webp',
+              isCutoutDrink: true,
             },
             {
               id: 'kinley-05',
@@ -1154,7 +1151,8 @@ export const siteData: Record<Language, SiteDictionary> = {
               proteinG: 0,
               carbsG: 45,
               fatG: 0,
-              image: '/images/menu/kinley-05.jpg',
+              image: '/images/menu/kinley-05.webp',
+              isCutoutDrink: true,
             },
             {
               id: 'xixo-025',
@@ -1166,7 +1164,8 @@ export const siteData: Record<Language, SiteDictionary> = {
               proteinG: 0,
               carbsG: 18,
               fatG: 0,
-              image: '/images/menu/xixo-025.jpg',
+              image: '/images/menu/xixo-025.webp',
+              isCutoutDrink: true,
             },
           ],
         },
@@ -1184,9 +1183,16 @@ export const siteData: Record<Language, SiteDictionary> = {
       finalTotalLabel: 'Várható végösszeg',
       callToOrderCta: 'Telefonos rendelés',
       clearCartLabel: 'Kosár ürítése',
-      kcalToggleLabel: 'Kalória táblázat',
-      kcalTotalLabel: 'Összes becsült kalória',
+      kcalToggleLabel: 'Kalória & Makró táblázat',
+      kcalTotalLabel: 'Összesen',
       kcalDisclaimer: 'Tájékoztató becslés (±15% eltérhet)',
+      macroHeaders: {
+        item: 'Tétel',
+        kcal: 'kcal',
+        protein: 'Fehérje',
+        carbs: 'Szénh.',
+        fat: 'Zsír',
+      },
     },
     promos: {
       badge: 'KEDVEZMÉNYEK',
@@ -1230,67 +1236,13 @@ export const siteData: Record<Language, SiteDictionary> = {
       socialPrompt: 'Akciókért és újdonságokért kövess minket!',
       stickerCaptions: {
         gyros: 'Nagy Gyros Tál',
-        burger: 'Dupla Smash Burger',
+        burger: 'Gouda Boss Burger',
       },
       stats: [
         { value: '4.2 ★', label: '32+ Google' },
         { value: '100%', label: 'Marha & Csirke' },
         { value: '35+', label: 'Étel & Box' },
         { value: '+700 Ft', label: 'Menü Upgrade' },
-      ],
-    },
-    gallery: {
-      badge: 'FOTÓK',
-      title: 'GALÉRIA',
-      items: [
-        {
-          id: 'gal-1',
-          src: '/images/menu/smash-box-1.jpg',
-          title: '6 db-os Smash Box',
-          categoryLabel: 'Smash Box',
-        },
-        {
-          id: 'gal-2',
-          src: '/images/brand/interior.jpg',
-          title: 'Étterem',
-          categoryLabel: 'Belső tér',
-        },
-        {
-          id: 'gal-3',
-          src: '/images/menu/dupla-smash-burger.jpg',
-          title: 'Dupla Húsos Smash Burger',
-          categoryLabel: 'Burger',
-        },
-        {
-          id: 'gal-4',
-          src: '/images/menu/nagy-gyros-tal.jpg',
-          title: 'Nagy Gyros Tál',
-          categoryLabel: 'Gyros',
-        },
-        {
-          id: 'gal-5',
-          src: '/images/menu/gouda-boss-burger.jpg',
-          title: 'Gouda Boss Burger',
-          categoryLabel: 'Burger',
-        },
-        {
-          id: 'gal-6',
-          src: '/images/menu/smash-box-tray.jpg',
-          title: 'Smash Box tálcán',
-          categoryLabel: 'Smash Box',
-        },
-        {
-          id: 'gal-7',
-          src: '/images/menu/cheddar-sajtos-burger.jpg',
-          title: 'Cheddar Sajtos Burger',
-          categoryLabel: 'Burger',
-        },
-        {
-          id: 'gal-8',
-          src: '/images/menu/gyros-pita.jpg',
-          title: 'Gyros Pita',
-          categoryLabel: 'Gyros',
-        },
       ],
     },
     reviews: {
@@ -1471,10 +1423,10 @@ export const siteData: Record<Language, SiteDictionary> = {
       menu: 'Menu',
       promos: 'Deals',
       about: 'Restaurant',
-      gallery: 'Gallery',
       reviews: 'Reviews',
       contact: 'Contact',
       cartLabel: 'Cart',
+      secretLinkLabel: 'Secret Formula',
     },
     hero: {
       eyebrow: 'NYÍRBÁTOR • SZENTVÉR ÚT 19.',
@@ -1486,6 +1438,7 @@ export const siteData: Record<Language, SiteDictionary> = {
       scrollHint: 'Scroll',
       prevSlideAria: 'Previous featured dish',
       nextSlideAria: 'Next featured dish',
+      secretTriggerAria: 'Reveal Secret Krabby Patty Burger',
       slides: [
         {
           id: 'dupla-smash-burger',
@@ -1498,14 +1451,17 @@ export const siteData: Record<Language, SiteDictionary> = {
           priceValue: '2 700 Ft',
           numericPrice: 2700,
           kcal: 860,
+          proteinG: 48,
+          carbsG: 46,
+          fatG: 54,
           image: '/images/menu/dupla-smash-burger.jpg',
           comboEligible: true,
           layerLabels: [
-            'Toasted brioche crown',
-            'Crispy bacon & pickles',
-            'Smash beef & molten cheddar',
-            'Smash beef & house sauce',
-            'Toasted brioche heel',
+            '150g smashed beef',
+            'Crispy grilled bacon',
+            'Molten cheddar sauce',
+            'Crisp pickles',
+            'House burger sauce',
           ],
         },
         {
@@ -1519,34 +1475,41 @@ export const siteData: Record<Language, SiteDictionary> = {
           priceValue: '4 900 Ft',
           numericPrice: 4900,
           kcal: 2480,
+          proteinG: 118,
+          carbsG: 215,
+          fatG: 128,
           image: '/images/menu/smash-box-1.jpg',
           comboEligible: false,
           layerLabels: [
-            '3 classic mini Smash Burgers',
-            '3 bacon mini Smash Burgers',
-            '2 crispy fries & 2 dipping sauces',
-            'Street-food kraft box tray',
+            '6 mini Smash Burgers',
+            '100% juicy smashed beef',
+            'Melted cheddar & bacon',
+            '2 portions of crispy fries',
+            '2 selectable dipping sauces',
           ],
         },
         {
-          id: 'cheddar-sajtorulet',
+          id: 'cheddar-sajtos-burger',
           tag: 'FLOWING MOLTEN CHEESE',
           titleLine1: 'CHEDDAR',
           titleAccent: 'MADNESS BURGER',
           bgWord: 'CHEDDAR',
           ingredients:
-            'Flowing molten cheddar sauce • smashed beef • red onion jam • bacon • crispy onion rings',
-          priceValue: '3 400 Ft',
-          numericPrice: 3400,
-          kcal: 980,
-          image: '/images/menu/cheddar-sajtorulet.jpg',
+            '85g smashed beef • molten cheddar pouring over the crown • crispy bacon • red onion jam • pickles',
+          priceValue: '3 700 Ft',
+          numericPrice: 3700,
+          kcal: 940,
+          proteinG: 42,
+          carbsG: 52,
+          fatG: 62,
+          image: '/images/menu/cheddar-sajtos-burger.jpg',
           comboEligible: true,
           layerLabels: [
-            'Crispy onion rings & brioche crown',
-            'Flowing molten cheddar wave',
+            'Double crispy fried onion rings',
+            'Molten cheddar pouring over the crown',
             'Crispy bacon & red onion jam',
-            'Smash beef & melted cheddar',
-            'Toasted brioche heel',
+            '85g juicy smashed beef & cheddar',
+            'Crisp pickles & toasted bun',
           ],
         },
       ],
@@ -1554,7 +1517,7 @@ export const siteData: Record<Language, SiteDictionary> = {
         'FAST. DELICIOUS. FOR YOU!',
         '100% BEEF SMASH BURGER',
         '6-PC SMASH BOX 4 900 FT',
-        'CHEDDAR MADNESS 3 400 FT',
+        'CHEDDAR CHEESE BURGER 3 700 FT',
         'GYROS & KEBAB',
         'COMBO UPGRADE +700 FT',
       ],
@@ -1571,6 +1534,9 @@ export const siteData: Record<Language, SiteDictionary> = {
       itemsCountLabel: 'items',
       addToCartLabel: '+ Add',
       menuUpgradeToggleLabel: '+ Combo (+700 Ft)',
+      lightboxPrevAria: 'Previous dish photo',
+      lightboxNextAria: 'Next dish photo',
+      lightboxCloseAria: 'Close',
       sortLabels: {
         nameAsc: 'A–Z',
         nameDesc: 'Z–A',
@@ -1585,6 +1551,9 @@ export const siteData: Record<Language, SiteDictionary> = {
         fat: 'Fat',
         comboBonusLabel: '+ Combo (+460 kcal)',
         comboBonusKcal: 460,
+        comboBonusProteinG: 5,
+        comboBonusCarbsG: 74,
+        comboBonusFatG: 16,
         disclaimer: 'Approximate values, ±15% variance may occur.',
       },
       filterLabels: {
@@ -1592,6 +1561,7 @@ export const siteData: Record<Language, SiteDictionary> = {
         cheeseLover: 'Cheese',
         spicy: 'Spicy',
         poultry: 'Chicken',
+        secretRecipe: 'Secret Formula',
       },
       comboStrip: {
         title: 'COMBO UPGRADE',
@@ -1609,6 +1579,9 @@ export const siteData: Record<Language, SiteDictionary> = {
           price: 500,
           priceDisplay: '+500 Ft',
           kcal: 80,
+          proteinG: 1,
+          carbsG: 16,
+          fatG: 2,
           category: 'side',
         },
         {
@@ -1617,6 +1590,9 @@ export const siteData: Record<Language, SiteDictionary> = {
           price: 600,
           priceDisplay: '600 Ft',
           kcal: 210,
+          proteinG: 6,
+          carbsG: 4,
+          fatG: 18,
           category: 'sauce',
         },
         {
@@ -1625,6 +1601,9 @@ export const siteData: Record<Language, SiteDictionary> = {
           price: 300,
           priceDisplay: '300 Ft',
           kcal: 190,
+          proteinG: 1,
+          carbsG: 4,
+          fatG: 19,
           category: 'sauce',
         },
         {
@@ -1633,6 +1612,9 @@ export const siteData: Record<Language, SiteDictionary> = {
           price: 300,
           priceDisplay: '300 Ft',
           kcal: 110,
+          proteinG: 3,
+          carbsG: 4,
+          fatG: 9,
           category: 'sauce',
         },
         {
@@ -1641,6 +1623,9 @@ export const siteData: Record<Language, SiteDictionary> = {
           price: 300,
           priceDisplay: '300 Ft',
           kcal: 95,
+          proteinG: 1,
+          carbsG: 6,
+          fatG: 7,
           category: 'sauce',
         },
         {
@@ -1649,6 +1634,9 @@ export const siteData: Record<Language, SiteDictionary> = {
           price: 300,
           priceDisplay: '300 Ft',
           kcal: 105,
+          proteinG: 3,
+          carbsG: 4,
+          fatG: 8,
           category: 'sauce',
         },
       ],
@@ -1670,7 +1658,6 @@ export const siteData: Record<Language, SiteDictionary> = {
               carbsG: 215,
               fatG: 128,
               image: '/images/menu/smash-box-1.jpg',
-              badge: 'Box',
               smashBeef: true,
               cheeseLover: true,
             },
@@ -1689,53 +1676,6 @@ export const siteData: Record<Language, SiteDictionary> = {
               smashBeef: true,
               cheeseLover: true,
               menuUpgradeable: true,
-            },
-            {
-              id: 'cheddar-sajtorulet',
-              name: 'Cheddar Madness Burger',
-              description:
-                'Hot molten cheddar sauce, smashed beef, choice of: bacon / cheddar / jalapeño / ham',
-              price: '3 400 Ft',
-              numericPrice: 3400,
-              kcal: 980,
-              proteinG: 46,
-              carbsG: 54,
-              fatG: 64,
-              image: '/images/menu/cheddar-sajtorulet.jpg',
-              badge: '4 Styles',
-              smashBeef: true,
-              cheeseLover: true,
-              menuUpgradeable: true,
-              variants: [
-                {
-                  id: 'bacon',
-                  label: 'Bacon',
-                  price: 3400,
-                  priceDisplay: '3 400 Ft',
-                  kcal: 990,
-                },
-                {
-                  id: 'cheddar',
-                  label: 'Cheddar',
-                  price: 3400,
-                  priceDisplay: '3 400 Ft',
-                  kcal: 1020,
-                },
-                {
-                  id: 'jalapeno',
-                  label: 'Jalapeño',
-                  price: 3400,
-                  priceDisplay: '3 400 Ft',
-                  kcal: 920,
-                },
-                {
-                  id: 'sonka',
-                  label: 'Ham',
-                  price: 3400,
-                  priceDisplay: '3 400 Ft',
-                  kcal: 940,
-                },
-              ],
             },
             {
               id: 'csibe-burger',
@@ -1791,7 +1731,6 @@ export const siteData: Record<Language, SiteDictionary> = {
               carbsG: 46,
               fatG: 54,
               image: '/images/menu/dupla-smash-burger.jpg',
-              badge: 'Top',
               smashBeef: true,
               cheeseLover: true,
               menuUpgradeable: true,
@@ -1822,7 +1761,6 @@ export const siteData: Record<Language, SiteDictionary> = {
               carbsG: 58,
               fatG: 72,
               image: '/images/menu/gouda-boss-burger.jpg',
-              badge: 'Boss',
               smashBeef: true,
               cheeseLover: true,
               menuUpgradeable: true,
@@ -1840,6 +1778,7 @@ export const siteData: Record<Language, SiteDictionary> = {
               image: '/images/menu/herkentyu-burger.jpg',
               smashBeef: true,
               cheeseLover: true,
+              secretRecipe: true,
               menuUpgradeable: true,
             },
             {
@@ -1882,7 +1821,6 @@ export const siteData: Record<Language, SiteDictionary> = {
               carbsG: 47,
               fatG: 58,
               image: '/images/menu/szarvasgombas-burger.jpg',
-              badge: '170g',
               smashBeef: true,
               cheeseLover: true,
               menuUpgradeable: true,
@@ -1951,7 +1889,6 @@ export const siteData: Record<Language, SiteDictionary> = {
               carbsG: 96,
               fatG: 61,
               image: '/images/menu/nagy-gyros-tal.jpg',
-              badge: 'Top',
               poultry: true,
             },
             {
@@ -2155,7 +2092,6 @@ export const siteData: Record<Language, SiteDictionary> = {
               carbsG: 86,
               fatG: 62,
               image: '/images/menu/cheddar-sonka-csirke.jpg',
-              badge: 'Panko',
               poultry: true,
               cheeseLover: true,
             },
@@ -2263,7 +2199,8 @@ export const siteData: Record<Language, SiteDictionary> = {
               proteinG: 0,
               carbsG: 35,
               fatG: 0,
-              image: '/images/menu/coca-cola-033.jpg',
+              image: '/images/menu/coca-cola-033.webp',
+              isCutoutDrink: true,
             },
             {
               id: 'coca-cola-05',
@@ -2275,7 +2212,8 @@ export const siteData: Record<Language, SiteDictionary> = {
               proteinG: 0,
               carbsG: 53,
               fatG: 0,
-              image: '/images/menu/coca-cola-05.jpg',
+              image: '/images/menu/coca-cola-05.webp',
+              isCutoutDrink: true,
             },
             {
               id: 'fanta-033',
@@ -2287,7 +2225,8 @@ export const siteData: Record<Language, SiteDictionary> = {
               proteinG: 0,
               carbsG: 35,
               fatG: 0,
-              image: '/images/menu/fanta-033.jpg',
+              image: '/images/menu/fanta-033.webp',
+              isCutoutDrink: true,
             },
             {
               id: 'kinley-05',
@@ -2299,7 +2238,8 @@ export const siteData: Record<Language, SiteDictionary> = {
               proteinG: 0,
               carbsG: 45,
               fatG: 0,
-              image: '/images/menu/kinley-05.jpg',
+              image: '/images/menu/kinley-05.webp',
+              isCutoutDrink: true,
             },
             {
               id: 'xixo-025',
@@ -2311,7 +2251,8 @@ export const siteData: Record<Language, SiteDictionary> = {
               proteinG: 0,
               carbsG: 18,
               fatG: 0,
-              image: '/images/menu/xixo-025.jpg',
+              image: '/images/menu/xixo-025.webp',
+              isCutoutDrink: true,
             },
           ],
         },
@@ -2328,9 +2269,16 @@ export const siteData: Record<Language, SiteDictionary> = {
       finalTotalLabel: 'Estimated Total',
       callToOrderCta: 'Call to Order',
       clearCartLabel: 'Clear cart',
-      kcalToggleLabel: 'Calorie Breakdown',
-      kcalTotalLabel: 'Estimated Total Calories',
+      kcalToggleLabel: 'Calories & Macros Table',
+      kcalTotalLabel: 'Total',
       kcalDisclaimer: 'Approximate estimate (±15% variance)',
+      macroHeaders: {
+        item: 'Item',
+        kcal: 'kcal',
+        protein: 'Protein',
+        carbs: 'Carbs',
+        fat: 'Fat',
+      },
     },
     promos: {
       badge: 'DISCOUNTS',
@@ -2374,67 +2322,13 @@ export const siteData: Record<Language, SiteDictionary> = {
       socialPrompt: 'Follow us for deals & new drops!',
       stickerCaptions: {
         gyros: 'Large Gyros Platter',
-        burger: 'Double Smash Burger',
+        burger: 'Gouda Boss Burger',
       },
       stats: [
         { value: '4.2 ★', label: '32+ Google' },
         { value: '100%', label: 'Beef & Poultry' },
         { value: '35+', label: 'Dishes & Boxes' },
         { value: '+700 Ft', label: 'Combo Upgrade' },
-      ],
-    },
-    gallery: {
-      badge: 'PHOTOS',
-      title: 'GALLERY',
-      items: [
-        {
-          id: 'gal-1',
-          src: '/images/menu/smash-box-1.jpg',
-          title: '6-pc Smash Box',
-          categoryLabel: 'Smash Box',
-        },
-        {
-          id: 'gal-2',
-          src: '/images/brand/interior.jpg',
-          title: 'Restaurant',
-          categoryLabel: 'Interior',
-        },
-        {
-          id: 'gal-3',
-          src: '/images/menu/dupla-smash-burger.jpg',
-          title: 'Double Smash Burger',
-          categoryLabel: 'Burger',
-        },
-        {
-          id: 'gal-4',
-          src: '/images/menu/nagy-gyros-tal.jpg',
-          title: 'Large Gyros Platter',
-          categoryLabel: 'Gyros',
-        },
-        {
-          id: 'gal-5',
-          src: '/images/menu/gouda-boss-burger.jpg',
-          title: 'Gouda Boss Burger',
-          categoryLabel: 'Burger',
-        },
-        {
-          id: 'gal-6',
-          src: '/images/menu/smash-box-tray.jpg',
-          title: 'Smash Box Tray',
-          categoryLabel: 'Smash Box',
-        },
-        {
-          id: 'gal-7',
-          src: '/images/menu/cheddar-sajtos-burger.jpg',
-          title: 'Cheddar Burger',
-          categoryLabel: 'Burger',
-        },
-        {
-          id: 'gal-8',
-          src: '/images/menu/gyros-pita.jpg',
-          title: 'Gyros Pita',
-          categoryLabel: 'Gyros',
-        },
       ],
     },
     reviews: {

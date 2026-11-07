@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Language, HeroSlide, siteData } from '@/data/siteData';
 import SmoothScrollProvider from '@/components/SmoothScrollProvider';
 import Navbar from '@/components/Navbar';
@@ -9,15 +9,27 @@ import HeroSection from '@/components/HeroSection';
 import MenuSection from '@/components/MenuSection';
 import PromosSection from '@/components/PromosSection';
 import AboutSection from '@/components/AboutSection';
-import GallerySection from '@/components/GallerySection';
 import ReviewsSection from '@/components/ReviewsSection';
 import ContactFooterSection from '@/components/ContactFooterSection';
 import CartDrawer, { CartItem } from '@/components/CartDrawer';
+
+const BUBBLE_PARTICLES = [
+  { id: 0, left: '10%', size: 18, delay: 0.02, dur: 1.35, color: '#FFD814' },
+  { id: 1, left: '22%', size: 26, delay: 0.12, dur: 1.5, color: '#67E8F9' },
+  { id: 2, left: '34%', size: 14, delay: 0.05, dur: 1.25, color: '#A5F3FC' },
+  { id: 3, left: '47%', size: 32, delay: 0.16, dur: 1.6, color: '#FFD814' },
+  { id: 4, left: '58%', size: 20, delay: 0.08, dur: 1.4, color: '#67E8F9' },
+  { id: 5, left: '70%', size: 28, delay: 0.18, dur: 1.55, color: '#FFB800' },
+  { id: 6, left: '82%', size: 16, delay: 0.04, dur: 1.3, color: '#67E8F9' },
+  { id: 7, left: '90%', size: 24, delay: 0.14, dur: 1.45, color: '#FFD814' },
+];
 
 export default function HomePage() {
   const [lang, setLang] = useState<Language>('hu');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [secretTriggerCount, setSecretTriggerCount] = useState(0);
+  const [bubbleBurstId, setBubbleBurstId] = useState<number | null>(null);
 
   const dict = siteData[lang];
 
@@ -39,7 +51,11 @@ export default function HomePage() {
       isCombo?: boolean;
       unitPrice: number;
       unitKcal: number;
+      unitProteinG: number;
+      unitCarbsG: number;
+      unitFatG: number;
       image?: string;
+      isCutoutDrink?: boolean;
     }) => {
       const key = `${newItem.id}__${newItem.variantLabel || 'base'}__${
         newItem.isCombo ? 'combo' : 'single'
@@ -65,8 +81,12 @@ export default function HomePage() {
             isCombo: newItem.isCombo,
             unitPrice: newItem.unitPrice,
             unitKcal: newItem.unitKcal,
+            unitProteinG: newItem.unitProteinG,
+            unitCarbsG: newItem.unitCarbsG,
+            unitFatG: newItem.unitFatG,
             quantity: 1,
             image: newItem.image,
+            isCutoutDrink: newItem.isCutoutDrink,
           },
         ];
       });
@@ -101,11 +121,35 @@ export default function HomePage() {
         name: `${slide.titleLine1} ${slide.titleAccent}`,
         unitPrice: slide.numericPrice,
         unitKcal: slide.kcal,
+        unitProteinG: slide.proteinG,
+        unitCarbsG: slide.carbsG,
+        unitFatG: slide.fatG,
         image: slide.image,
       });
     },
     [handleAddToCart]
   );
+
+  const handleTriggerSecret = useCallback(() => {
+    const burstKey = Date.now();
+    setBubbleBurstId(burstKey);
+    setSecretTriggerCount((c) => c + 1);
+    setTimeout(() => {
+      setBubbleBurstId((curr) => (curr === burstKey ? null : curr));
+    }, 1700);
+
+    setTimeout(() => {
+      const target =
+        (document.getElementById('item-herkentyu-burger') as HTMLElement | null) ||
+        (document.getElementById('menu') as HTMLElement | null);
+      if (!target) return;
+      if (window.__lenis) {
+        window.__lenis.scrollTo(target, { offset: -145, duration: 0.85 });
+      } else {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 120);
+  }, []);
 
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -118,9 +162,49 @@ export default function HomePage() {
           dict={dict}
           cartCount={cartCount}
           onOpenCart={() => setCartOpen(true)}
+          onTriggerSecret={handleTriggerSecret}
         />
 
-        {/* Smooth Micro-Transition Wrapper on Language Switch (preserves scroll & sticky physics!) */}
+        {/* Celebratory Sea-Sponge Underwater Bubble Burst Overlay */}
+        <AnimatePresence>
+          {bubbleBurstId && (
+            <motion.div
+              key={bubbleBurstId}
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 pointer-events-none overflow-hidden"
+              aria-hidden="true"
+            >
+              {BUBBLE_PARTICLES.map((b) => (
+                <motion.span
+                  key={b.id}
+                  initial={{ y: '105vh', x: 0, opacity: 0.95, scale: 0.6 }}
+                  animate={{
+                    y: '-15vh',
+                    x: b.id % 2 === 0 ? [0, 18, -12, 8] : [0, -18, 14, -6],
+                    opacity: [0.95, 0.9, 0],
+                    scale: [0.6, 1.15, 0.9],
+                  }}
+                  transition={{
+                    duration: b.dur,
+                    delay: b.delay,
+                    ease: 'easeOut',
+                  }}
+                  style={{
+                    left: b.left,
+                    width: b.size,
+                    height: b.size,
+                    borderColor: b.color,
+                    boxShadow: `0 0 18px ${b.color}66`,
+                  }}
+                  className="absolute top-0 rounded-full border-2 bg-white/10 backdrop-blur-[1px]"
+                />
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Smooth Micro-Transition Wrapper on Language Switch */}
         <motion.div
           key={lang}
           initial={{ opacity: 0.55 }}
@@ -132,16 +216,17 @@ export default function HomePage() {
             getCartQty={getCartQty}
             onAddHeroSlide={handleAddHeroSlide}
             onUpdateQty={handleUpdateQty}
+            onTriggerSecret={handleTriggerSecret}
           />
           <MenuSection
             dict={dict}
             getCartQty={getCartQty}
             onAddToCart={handleAddToCart}
             onUpdateQty={handleUpdateQty}
+            secretTriggerCount={secretTriggerCount}
           />
           <PromosSection dict={dict} />
           <AboutSection dict={dict} />
-          <GallerySection dict={dict} />
           <ReviewsSection dict={dict} />
           <ContactFooterSection dict={dict} />
         </motion.div>

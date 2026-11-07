@@ -25,8 +25,12 @@ export interface CartItem {
   isCombo?: boolean;
   unitPrice: number;
   unitKcal: number;
+  unitProteinG: number;
+  unitCarbsG: number;
+  unitFatG: number;
   quantity: number;
   image?: string;
+  isCutoutDrink?: boolean;
 }
 
 interface CartDrawerProps {
@@ -59,6 +63,9 @@ export default function CartDrawer({
   const totalCount = items.reduce((acc, item) => acc + item.quantity, 0);
   const subtotal = items.reduce((acc, item) => acc + item.unitPrice * item.quantity, 0);
   const totalKcal = items.reduce((acc, item) => acc + item.unitKcal * item.quantity, 0);
+  const totalProtein = items.reduce((acc, item) => acc + item.unitProteinG * item.quantity, 0);
+  const totalCarbs = items.reduce((acc, item) => acc + item.unitCarbsG * item.quantity, 0);
+  const totalFat = items.reduce((acc, item) => acc + item.unitFatG * item.quantity, 0);
 
   const discountRate = discountMode === '10' ? 0.1 : discountMode === '20' ? 0.2 : 0;
   const finalTotal = Math.round(subtotal * (1 - discountRate));
@@ -185,13 +192,17 @@ export default function CartDrawer({
                         className="py-4 flex items-center gap-4"
                       >
                         {item.image && (
-                          <div className="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 bg-zinc-900">
+                          <div
+                            className={`relative w-14 h-14 rounded-xl overflow-hidden shrink-0 ${
+                              item.isCutoutDrink ? 'bg-transparent p-1' : 'bg-zinc-900'
+                            }`}
+                          >
                             <Image
                               src={item.image}
                               alt={item.name}
                               fill
                               sizes="56px"
-                              className="object-cover"
+                              className={item.isCutoutDrink ? 'object-contain' : 'object-cover'}
                             />
                           </div>
                         )}
@@ -281,7 +292,7 @@ export default function CartDrawer({
                     </button>
                   </div>
 
-                  {/* Hidden / Collapsible Calorie Breakdown Table */}
+                  {/* Collapsible Complete Nutrition & Macro Table */}
                   <div className="rounded-2xl bg-white/[0.03] border border-white/8 overflow-hidden">
                     <button
                       type="button"
@@ -311,30 +322,77 @@ export default function CartDrawer({
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                          transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
                           className="overflow-hidden"
                         >
-                          <div className="px-3.5 pb-3 pt-1 border-t border-white/8 space-y-1.5 text-[11px] font-mono">
-                            {items.map((it) => (
-                              <div
-                                key={it.key}
-                                className="flex items-center justify-between gap-2 text-zinc-400"
-                              >
-                                <span className="truncate">
-                                  {it.quantity}× {it.name}
-                                </span>
-                                <span className="text-zinc-200 shrink-0">
-                                  ~{(it.unitKcal * itemQtySafe(it.quantity)).toLocaleString('hu-HU')} kcal
-                                </span>
-                              </div>
-                            ))}
-                            <div className="pt-1.5 border-t border-white/8 flex items-center justify-between text-zinc-300 font-bold">
-                              <span>{dict.cart.kcalTotalLabel}</span>
-                              <span className="text-[#FFB800]">
-                                ~{totalKcal.toLocaleString('hu-HU')} kcal
-                              </span>
+                          <div className="px-3 pb-3 pt-2 border-t border-white/8 text-[11px] font-mono">
+                            <div className="overflow-x-auto no-scrollbar">
+                              <table className="w-full text-left border-collapse">
+                                <thead>
+                                  <tr className="border-b border-white/10 text-[10px] uppercase tracking-wider text-zinc-500">
+                                    <th className="pb-1.5 pr-2 font-semibold">
+                                      {dict.cart.macroHeaders.item}
+                                    </th>
+                                    <th className="pb-1.5 px-1.5 text-right font-semibold text-[#FFB800]">
+                                      {dict.cart.macroHeaders.kcal}
+                                    </th>
+                                    <th className="pb-1.5 px-1.5 text-right font-semibold">
+                                      {dict.cart.macroHeaders.protein}
+                                    </th>
+                                    <th className="pb-1.5 px-1.5 text-right font-semibold">
+                                      {dict.cart.macroHeaders.carbs}
+                                    </th>
+                                    <th className="pb-1.5 pl-1.5 text-right font-semibold">
+                                      {dict.cart.macroHeaders.fat}
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-white/[0.05]">
+                                  {items.map((it) => {
+                                    const q = itemQtySafe(it.quantity);
+                                    return (
+                                      <tr key={it.key} className="text-zinc-300">
+                                        <td className="py-1.5 pr-2 max-w-[135px] truncate text-zinc-200">
+                                          {q}× {it.name}
+                                        </td>
+                                        <td className="py-1.5 px-1.5 text-right text-[#FFB800] whitespace-nowrap">
+                                          {(it.unitKcal * q).toLocaleString('hu-HU')}
+                                        </td>
+                                        <td className="py-1.5 px-1.5 text-right whitespace-nowrap">
+                                          {it.unitProteinG * q}g
+                                        </td>
+                                        <td className="py-1.5 px-1.5 text-right whitespace-nowrap">
+                                          {it.unitCarbsG * q}g
+                                        </td>
+                                        <td className="py-1.5 pl-1.5 text-right whitespace-nowrap">
+                                          {it.unitFatG * q}g
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                                </tbody>
+                                <tfoot>
+                                  <tr className="border-t border-white/15 font-bold text-white">
+                                    <td className="pt-2 pr-2 uppercase text-[10px] tracking-wider text-zinc-300">
+                                      {dict.cart.kcalTotalLabel}
+                                    </td>
+                                    <td className="pt-2 px-1.5 text-right text-[#FFB800] whitespace-nowrap">
+                                      ~{totalKcal.toLocaleString('hu-HU')}
+                                    </td>
+                                    <td className="pt-2 px-1.5 text-right text-emerald-300 whitespace-nowrap">
+                                      {totalProtein}g
+                                    </td>
+                                    <td className="pt-2 px-1.5 text-right text-sky-300 whitespace-nowrap">
+                                      {totalCarbs}g
+                                    </td>
+                                    <td className="pt-2 pl-1.5 text-right text-amber-300 whitespace-nowrap">
+                                      {totalFat}g
+                                    </td>
+                                  </tr>
+                                </tfoot>
+                              </table>
                             </div>
-                            <p className="text-[10px] text-zinc-500 pt-0.5">
+                            <p className="text-[10px] text-zinc-500 pt-2">
                               {dict.cart.kcalDisclaimer}
                             </p>
                           </div>

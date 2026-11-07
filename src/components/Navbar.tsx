@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, Menu, X, ShoppingBag } from 'lucide-react';
 import { Language, SiteDictionary, businessInfo } from '@/data/siteData';
+import SeaSpongeIcon from '@/components/SeaSpongeIcon';
 
 interface NavbarProps {
   lang: Language;
@@ -12,6 +13,7 @@ interface NavbarProps {
   dict: SiteDictionary;
   cartCount: number;
   onOpenCart: () => void;
+  onTriggerSecret: () => void;
 }
 
 export default function Navbar({
@@ -20,6 +22,7 @@ export default function Navbar({
   dict,
   cartCount,
   onOpenCart,
+  onTriggerSecret,
 }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -50,7 +53,6 @@ export default function Navbar({
     { href: '#menu', label: dict.nav.menu },
     { href: '#promos', label: dict.nav.promos },
     { href: '#about', label: dict.nav.about },
-    { href: '#gallery', label: dict.nav.gallery },
     { href: '#reviews', label: dict.nav.reviews },
     { href: '#contact', label: dict.nav.contact },
   ];
@@ -64,7 +66,7 @@ export default function Navbar({
       }`}
       style={{ transform: 'translate3d(0,0,0)' }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3">
+      <div className="w-full max-w-[1860px] mx-auto px-4 sm:px-8 lg:px-12 2xl:px-16 flex items-center justify-between gap-3">
         {/* Brand Logo ONLY — Logo speaks for itself */}
         <a
           href="#home"
@@ -184,9 +186,9 @@ export default function Navbar({
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="xl:hidden overflow-hidden bg-[#0E1016]/98 backdrop-blur-2xl border-b border-white/10"
+            className="xl:hidden relative overflow-hidden bg-[#0E1016]/98 backdrop-blur-2xl border-b border-white/10"
           >
-            <div className="px-6 py-5 grid grid-cols-2 gap-3">
+            <div className="px-6 py-5 grid grid-cols-2 gap-3 pr-14">
               {navLinks.map((item) => (
                 <a
                   key={item.href}
@@ -198,6 +200,20 @@ export default function Navbar({
                 </a>
               ))}
             </div>
+
+            {/* Subtle Hidden Peeking Sea-Sponge Easter Egg tucked at bottom-right of mobile drawer */}
+            <button
+              type="button"
+              onClick={() => {
+                setMobileOpen(false);
+                onTriggerSecret();
+              }}
+              aria-label={dict.nav.secretLinkLabel}
+              title={dict.nav.secretLinkLabel}
+              className="absolute -bottom-1.5 right-4 p-2 opacity-45 hover:opacity-100 active:scale-95 transition-all rotate-[-8deg] hover:rotate-0 cursor-pointer"
+            >
+              <SeaSpongeIcon className="w-7 h-7 drop-shadow-[0_4px_12px_rgba(255,216,20,0.45)]" />
+            </button>
           </motion.div>
         )}
       </AnimatePresence>

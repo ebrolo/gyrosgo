@@ -26,9 +26,10 @@ export default function ReviewsSection({ dict }: ReviewsSectionProps) {
 
   const scrollByStep = (dir: -1 | 1) => {
     if (!sliderRef.current) return;
-    const cardWidth = window.innerWidth < 640 ? 310 : 410;
+    const isMobile = window.innerWidth < 640;
+    const step = isMobile ? sliderRef.current.clientWidth + 24 : 432;
     sliderRef.current.scrollBy({
-      left: dir * cardWidth,
+      left: dir * step,
       behavior: 'smooth',
     });
   };
@@ -58,9 +59,9 @@ export default function ReviewsSection({ dict }: ReviewsSectionProps) {
       id="reviews"
       className="relative py-20 sm:py-28 bg-[#0D0F14] overflow-x-clip border-b border-white/10"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Clean Unboxed Header + Rating + Arrow Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+      <div className="w-full max-w-[1860px] mx-auto px-4 sm:px-8 lg:px-12 2xl:px-16">
+        {/* Clean Unboxed Header + Rating + Google Links */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10 sm:mb-12">
           <div>
             <span className="text-xs font-mono font-bold uppercase tracking-[0.24em] text-[#FF6B00] block mb-2">
               {dict.reviews.badge}
@@ -89,32 +90,8 @@ export default function ReviewsSection({ dict }: ReviewsSectionProps) {
             </div>
           </div>
 
-          {/* Pure Icon Navigation Arrows + Google Links */}
+          {/* Pure Icon Google Links */}
           <div className="flex items-center gap-2.5 shrink-0">
-            <motion.button
-              whileHover={{ scale: 1.06 }}
-              whileTap={{ scale: 0.94 }}
-              type="button"
-              onClick={() => scrollByStep(-1)}
-              aria-label="Previous review"
-              className="w-11 h-11 rounded-full bg-white/8 hover:bg-white/18 text-white flex items-center justify-center transition-colors cursor-pointer"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.06 }}
-              whileTap={{ scale: 0.94 }}
-              type="button"
-              onClick={() => scrollByStep(1)}
-              aria-label="Next review"
-              className="w-11 h-11 rounded-full bg-white/8 hover:bg-[#FFB800] text-white hover:text-black flex items-center justify-center transition-colors cursor-pointer"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </motion.button>
-
-            <span className="w-[1px] h-6 bg-white/10 mx-1" />
-
             <motion.a
               whileHover={{ scale: 1.06 }}
               whileTap={{ scale: 0.94 }}
@@ -143,93 +120,122 @@ export default function ReviewsSection({ dict }: ReviewsSectionProps) {
           </div>
         </div>
 
-        {/* Single-Row Horizontal Slider */}
-        <div
-          ref={sliderRef}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={stopMouseDrag}
-          onMouseLeave={stopMouseDrag}
-          className="flex gap-8 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 cursor-grab active:cursor-grabbing select-none"
-        >
-          {dict.reviews.items.map((rev) => {
-            const isExpanded = expandedMap[rev.id] ?? false;
-            const isLong = rev.text.length > 165;
-            const displayedText =
-              !isLong || isExpanded ? rev.text : `${rev.text.slice(0, 165)}...`;
+        {/* Single-Row Slider Flanked by Left & Right Arrows at Both Ends (Mobile & Desktop) */}
+        <div className="flex items-center gap-2.5 sm:gap-5 w-full">
+          {/* Left Row-End Arrow */}
+          <motion.button
+            whileHover={{ scale: 1.08, x: -2 }}
+            whileTap={{ scale: 0.92 }}
+            type="button"
+            onClick={() => scrollByStep(-1)}
+            aria-label="Previous review"
+            className="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/8 hover:bg-[#FFB800] border border-white/12 hover:border-[#FFB800] text-white hover:text-black flex items-center justify-center shrink-0 transition-colors cursor-pointer shadow-lg"
+          >
+            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
+          </motion.button>
 
-            return (
-              <article
-                key={rev.id}
-                className="min-w-[295px] sm:min-w-[365px] max-w-[390px] shrink-0 snap-start pt-6 border-t border-white/15 flex flex-col justify-between space-y-5"
-              >
-                <div className="space-y-4">
-                  {/* Reviewer Header */}
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="relative w-10 h-10 rounded-full overflow-hidden bg-zinc-800 shrink-0">
-                        <Image
-                          src={rev.avatar}
-                          alt={rev.name}
-                          fill
-                          sizes="40px"
-                          draggable={false}
-                          className="object-cover pointer-events-none"
-                        />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-white text-sm">{rev.name}</h3>
-                        <div className="flex items-center gap-0.5 mt-0.5">
-                          {[...Array(rev.rating)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className="w-3 h-3 text-[#FFB800] fill-[#FFB800]"
-                            />
-                          ))}
+          {/* Horizontal Snap Track (100% Full Single Card Fit on Mobile, Multi-Card on Wide Desktop) */}
+          <div
+            ref={sliderRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={stopMouseDrag}
+            onMouseLeave={stopMouseDrag}
+            className="flex-1 min-w-0 flex gap-6 sm:gap-8 overflow-x-auto no-scrollbar snap-x snap-mandatory py-2 cursor-grab active:cursor-grabbing select-none"
+          >
+            {dict.reviews.items.map((rev) => {
+              const isExpanded = expandedMap[rev.id] ?? false;
+              const isLong = rev.text.length > 165;
+              const displayedText =
+                !isLong || isExpanded ? rev.text : `${rev.text.slice(0, 165)}...`;
+
+              return (
+                <article
+                  key={rev.id}
+                  className="w-full min-w-full max-w-full sm:w-[calc((100%-2rem)/2)] sm:min-w-[calc((100%-2rem)/2)] lg:w-[calc((100%-4rem)/3)] lg:min-w-[calc((100%-4rem)/3)] 2xl:w-[calc((100%-6rem)/4)] 2xl:min-w-[calc((100%-6rem)/4)] shrink-0 snap-center sm:snap-start pt-5 sm:pt-6 border-t border-white/15 flex flex-col justify-between space-y-4 sm:space-y-5"
+                >
+                  <div className="space-y-3.5 sm:space-y-4">
+                    {/* Reviewer Header */}
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="relative w-10 h-10 rounded-full overflow-hidden bg-zinc-800 shrink-0">
+                          <Image
+                            src={rev.avatar}
+                            alt={rev.name}
+                            fill
+                            sizes="40px"
+                            draggable={false}
+                            className="object-cover pointer-events-none"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="font-bold text-white text-sm truncate">
+                            {rev.name}
+                          </h3>
+                          <div className="flex items-center gap-0.5 mt-0.5">
+                            {[...Array(rev.rating)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className="w-3 h-3 text-[#FFB800] fill-[#FFB800]"
+                              />
+                            ))}
+                          </div>
                         </div>
                       </div>
+
+                      <a
+                        href={rev.googleLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Google Maps"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-zinc-500 hover:text-[#FFB800] transition-colors shrink-0"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
                     </div>
 
-                    <a
-                      href={rev.googleLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Google Maps"
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-zinc-500 hover:text-[#FFB800] transition-colors"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                    </a>
+                    {/* Review Body */}
+                    <div className="text-sm text-zinc-300 leading-relaxed break-words">
+                      <p>“{displayedText}”</p>
+                      {isLong && (
+                        <button
+                          type="button"
+                          onClick={() => toggleExpand(rev.id)}
+                          className="mt-1.5 text-xs font-mono font-bold uppercase tracking-wider text-[#FFB800] hover:underline cursor-pointer"
+                        >
+                          {isExpanded ? dict.reviews.lessLabel : dict.reviews.moreLabel}
+                        </button>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Review Body */}
-                  <div className="text-sm text-zinc-300 leading-relaxed">
-                    <p>“{displayedText}”</p>
-                    {isLong && (
-                      <button
-                        type="button"
-                        onClick={() => toggleExpand(rev.id)}
-                        className="mt-1.5 text-xs font-mono font-bold uppercase tracking-wider text-[#FFB800] hover:underline cursor-pointer"
-                      >
-                        {isExpanded ? dict.reviews.lessLabel : dict.reviews.moreLabel}
-                      </button>
-                    )}
-                  </div>
-                </div>
+                  {/* Unboxed Sub-ratings */}
+                  {rev.extras && rev.extras.length > 0 && (
+                    <div className="pt-2 flex flex-wrap gap-x-3.5 gap-y-1 text-[11px] font-mono text-zinc-500">
+                      {rev.extras.map((ex, i) => (
+                        <span key={i}>
+                          {ex.label}: <strong className="text-zinc-300">{ex.value}</strong>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
 
-                {/* Unboxed Sub-ratings */}
-                {rev.extras && rev.extras.length > 0 && (
-                  <div className="pt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-mono text-zinc-500">
-                    {rev.extras.map((ex, i) => (
-                      <span key={i}>
-                        {ex.label}: <strong className="text-zinc-300">{ex.value}</strong>
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </article>
-            );
-          })}
+          {/* Right Row-End Arrow */}
+          <motion.button
+            whileHover={{ scale: 1.08, x: 2 }}
+            whileTap={{ scale: 0.92 }}
+            type="button"
+            onClick={() => scrollByStep(1)}
+            aria-label="Next review"
+            className="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/8 hover:bg-[#FFB800] border border-white/12 hover:border-[#FFB800] text-white hover:text-black flex items-center justify-center shrink-0 transition-colors cursor-pointer shadow-lg"
+          >
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.5]" />
+          </motion.button>
         </div>
       </div>
     </section>

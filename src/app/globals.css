@@ -91,3 +91,19 @@ body {
   animation-play-state: paused;
 }
 
+/* Zero-CPU Native OS Hardware Spatula Cursor (Desktop / Fine Pointer Only) */
+@media (pointer: fine) {
+  html,
+  body {
+    cursor: url('/cursors/spatula.svg') 5 5, auto;
+  }
+
+  a,
+  button,
+  [role='button'],
+  .cursor-pointer,
+  .cursor-zoom-in {
+    cursor: url('/cursors/spatula-pointer.svg') 5 5, pointer !important;
+  }
+}
+

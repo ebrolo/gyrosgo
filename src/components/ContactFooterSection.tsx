@@ -44,7 +44,7 @@ export default function ContactFooterSection({ dict }: ContactFooterSectionProps
         id="contact"
         className="relative py-20 sm:py-28 bg-[#0A0B0E] overflow-x-clip border-b border-white/10"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-[1860px] mx-auto px-4 sm:px-8 lg:px-12 2xl:px-16">
           {/* Clean Unboxed Header */}
           <div className="mb-14">
             <span className="text-xs font-mono font-bold uppercase tracking-[0.24em] text-[#FF6B00] block mb-2">
@@ -185,7 +185,7 @@ export default function ContactFooterSection({ dict }: ContactFooterSectionProps
 
       {/* Footer */}
       <footer className="bg-[#07080A] pt-14 pb-10 text-zinc-400">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-[1860px] mx-auto px-4 sm:px-8 lg:px-12 2xl:px-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-white/10">
             {/* Brand Column + Social Icons */}
             <div className="lg:col-span-5 space-y-4">
